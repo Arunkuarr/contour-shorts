@@ -49,6 +49,22 @@ jobs:
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
         run: python -W ignore -m pipeline.main --count "${{ github.event.inputs.count || '' }}"
 
+      - name: Publish videos to the 'videos' branch (newest 8 kept)
+        run: |
+          set -e
+          ls output/*.mp4 >/dev/null 2>&1 || exit 0
+          mkdir -p /tmp/pub && cd /tmp/pub
+          git init -q
+          git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          if git fetch -q --depth 1 origin videos; then git checkout -q FETCH_HEAD -- .; fi
+          cp "$GITHUB_WORKSPACE"/output/*.mp4 "$GITHUB_WORKSPACE"/output/*.json .
+          for f in $(ls *.mp4 | sort | head -n -8); do rm -f "$f" "${f%.mp4}.json"; done
+          python3 -c "import json,glob;json.dump([dict(json.load(open(j)),video=j[:-5]+'.mp4') for j in sorted(glob.glob('[0-9]*.json'))],open('pending.json','w'),indent=2)"
+          git checkout -q --orphan pub
+          git add -A
+          git -c user.name=contour-bot -c user.email=contour-bot@users.noreply.github.com commit -qm "videos run ${{ github.run_number }}"
+          git push -qf origin pub:videos
+
       - name: Save videos (download from the run page)
         uses: actions/upload-artifact@v4
         with:
