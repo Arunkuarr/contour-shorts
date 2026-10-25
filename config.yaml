@@ -8,7 +8,8 @@ voice:
   engine: gemini          # gemini (free AI Studio key, very human) | google (Chirp 3 HD, needs billing) | edge (free, no signup) | kokoro (offline)
   gemini_model: gemini-2.5-flash-preview-tts
   gemini_voice: Charon    # male narrator; also try Orus, Fenrir, Iapetus (male) or Kore, Aoede (female)
-  gemini_style: "Read this like a curious, captivating documentary narrator telling a surprising story to a friend. Natural pace, slight dramatic pauses between sentences, warm and confident:"
+  gemini_style: "Read this like an energetic, captivating YouTube Shorts narrator telling a surprising true story. Brisk, punchy pace, short natural pauses between sentences, warm and confident:"
+  target_seconds: 34      # narration is sped up (max 1.3x) if longer than this
   google_voice: en-US-Chirp3-HD-Charon   # male narrator; try Orus, Fenrir, Puck (male) or Aoede, Kore (female)
   kokoro_voice: am_michael
   edge_voice: en-US-AndrewMultilingualNeural
