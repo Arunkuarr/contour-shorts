@@ -58,7 +58,9 @@ def pollinations(scene, path, w, h, cfg, seed):
             r = requests.get(url, headers=headers, timeout=180)
             if r.ok and r.headers.get("content-type", "").startswith("image"):
                 from io import BytesIO
-                return _save_cover(Image.open(BytesIO(r.content)), path, w, h)
+                im = Image.open(BytesIO(r.content))
+                im = im.crop((0, 0, im.width, int(im.height * 0.93)))  # drop the free-tier watermark strip
+                return _save_cover(im, path, w, h)
         except requests.RequestException:
             pass
         time.sleep(10 * (attempt + 1))
@@ -79,6 +81,7 @@ def title_card(scene, path, w, h, idx):
     img = img.filter(ImageFilter.GaussianBlur(1))
     d = ImageDraw.Draw(img)
     f = ImageFont.truetype(FONT, 64)
+    scene = scene.replace("\u2192", "\u00bb")  # Poppins has no arrow glyph
     words, lines, line = scene.split(), [], ""
     for wd in words:
         if d.textlength(line + " " + wd, font=f) > W * 0.7:
@@ -100,7 +103,7 @@ def get_scene_images(short, workdir, cfg):
     for i, scene in enumerate(short["scenes"]):
         p = os.path.join(workdir, f"scene_{i:02d}.jpg")
         got, src = None, None
-        if scene.lower().startswith("text card"):
+        if scene.lower().startswith(("text card", "timeline", "animated timeline")):
             got, src = title_card(scene.split(":", 1)[-1].strip(), p, w, h, i), "card"
         else:
             order = ["ai"] if mode == "ai" else ["stock"] if mode == "stock" else (
