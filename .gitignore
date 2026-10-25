@@ -1,0 +1,6 @@
+models/
+work/
+output/
+__pycache__/
+client_secret*.json
+assets/
