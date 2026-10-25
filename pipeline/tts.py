@@ -109,6 +109,14 @@ def _split_on_pauses(a, n):
 def _gemini_synth(sentences, cfg):
     v = cfg["voice"]
     a = _trim(_gemini(" ".join(sentences), v["gemini_voice"], v["gemini_style"], v["gemini_model"]))
+    target = v.get("target_seconds", 34)
+    if len(a) / SR > target:  # speed up (pitch kept) so Shorts stay ~30 s
+        f = min(len(a) / SR / target, 1.3)
+        src, dst = tempfile.mktemp(suffix=".wav"), tempfile.mktemp(suffix=".wav")
+        sf.write(src, a, SR)
+        subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", src, "-filter:a", f"atempo={f:.3f}", "-ar", str(SR), dst], check=True)
+        a, _ = sf.read(dst, dtype="float32")
+        print(f"  sped up narration x{f:.2f}")
     segs = _split_on_pauses(a, len(sentences))
     if len(segs) != len(sentences):  # couldn't find enough pauses: one segment per sentence by length
         L = np.cumsum([len(s) for s in sentences]) / sum(len(s) for s in sentences)
