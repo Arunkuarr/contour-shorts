@@ -9,11 +9,38 @@ import yaml
 from pipeline import tts, visuals, render
 
 
+DONE_IDS = "content/done/batch_done.txt"
+
+
 def next_scripts(n, only_id=None):
-    files = sorted(glob.glob("content/queue/*.json"))
+    """Queue = single files in content/queue/ + arrays in content/batches/*.json (minus done ids), by id."""
+    items = [(json.load(open(f))["id"], f) for f in glob.glob("content/queue/*.json")]
+    done = set()
+    if os.path.exists(DONE_IDS):
+        done = {int(l) for l in open(DONE_IDS) if l.strip()}
+    for f in sorted(glob.glob("content/batches/*.json")):
+        for obj in json.load(open(f)):
+            if obj["id"] not in done:
+                items.append((obj["id"], obj))
+    items.sort(key=lambda t: t[0])
     if only_id is not None:
-        files = [f for f in files if json.load(open(f))["id"] == only_id]
-    return files[:n]
+        items = [t for t in items if t[0] == only_id]
+    return [t[1] for t in items[:n]]
+
+
+def load(entry):
+    short = json.load(open(entry)) if isinstance(entry, str) else dict(entry)
+    if "description" not in short:
+        short["description"] = short["title"] + "\n\nSources:\n" + "\n".join(short.get("sources", []))
+    return short
+
+
+def mark_done(entry, short):
+    if isinstance(entry, str):
+        shutil.move(entry, os.path.join("content/done", os.path.basename(entry)))
+    else:
+        with open(DONE_IDS, "a") as fh:
+            fh.write(f"{short['id']}\n")
 
 
 def main():
@@ -27,7 +54,7 @@ def main():
     os.makedirs("output", exist_ok=True); os.makedirs("content/done", exist_ok=True)
     made = []
     for f in next_scripts(a.count or cfg["shorts_per_run"], a.id):
-        short = json.load(open(f))
+        short = load(f)
         slug = f"{short['id']:03d}"
         work = os.path.join("work", slug); os.makedirs(work, exist_ok=True)
         print(f"[{slug}] {short['title']}")
@@ -46,7 +73,7 @@ def main():
             meta["youtube_id"] = upload.upload(out, short, cfg)
         json.dump(meta, open(os.path.join("output", f"{slug}.json"), "w"), indent=2)
         if not a.keep_queue:
-            shutil.move(f, os.path.join("content/done", os.path.basename(f)))
+            mark_done(f, short)
         made.append(out)
     print("Done:", made or "queue empty, add scripts to content/queue/")
 
