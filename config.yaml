@@ -20,7 +20,7 @@ visuals:
   ai_provider: pollinations   # free, no key
   # Scenes that mention these words get AI images (stock rarely has them)
   historic_words: [century, medieval, ancient, ruler, king, queen, pharaoh, empire, "1[0-9]{3}", "[0-9]{2}th", victorian, regency, roman, viking, old, woodcut, sepia, black-and-white, uniform, robes]
-  style_suffix: "cinematic, dramatic lighting, highly detailed, documentary still, vertical composition, no text, no watermark"
+  style_suffix: "cinematic, dramatic lighting, highly detailed, historically accurate documentary still, people modestly and fully clothed, family friendly, vertical composition, no text, no watermark"
 
 video:
   width: 1080
