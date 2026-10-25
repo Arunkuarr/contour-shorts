@@ -1,0 +1,23 @@
+{
+  "id": 10,
+  "title": "The Year Summer Never Came",
+  "tags": "year without a summer, 1816, tambora, frankenstein",
+  "script": "In 1816, summer never arrived. A year earlier, Mount Tambora in Indonesia exploded in the largest volcanic eruption in recorded history. Its ash and gas cooled the whole planet. In June 1816, snow fell in New England. Crops failed across Europe and North America. Stuck indoors during the gloomy weather at Lake Geneva, a young writer named Mary Shelley began a story. It became Frankenstein. One volcano changed the weather, and literature.",
+  "scenes": [
+    "Massive volcano erupting at night, 1815",
+    "Ash cloud spreading across a globe",
+    "Snow falling on a New England farm in June",
+    "Withered crops, worried farmers",
+    "Stormy Lake Geneva villa, candlelit room",
+    "Young Mary Shelley writing by candle",
+    "Text card: 1816, the Year Without a Summer"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Year_Without_a_Summer",
+    "https://en.wikipedia.org/wiki/1815_eruption_of_Mount_Tambora",
+    "https://www.britannica.com/place/Mount-Tambora"
+  ],
+  "words": 72,
+  "est_seconds": 28,
+  "description": "The Year Summer Never Came\n\nSources:\nhttps://en.wikipedia.org/wiki/Year_Without_a_Summer\nhttps://en.wikipedia.org/wiki/1815_eruption_of_Mount_Tambora\nhttps://www.britannica.com/place/Mount-Tambora"
+}
