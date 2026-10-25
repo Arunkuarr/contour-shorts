@@ -1,0 +1,22 @@
+{
+  "id": 5,
+  "title": "The Book Nobody on Earth Can Read",
+  "tags": "voynich manuscript, mystery, unsolved",
+  "script": "There's a 600-year-old book that no one on Earth can read. It's called the Voynich Manuscript. Around 240 pages, written in a script that matches no known language, filled with drawings of plants that botanists can't identify. Carbon dating puts it in the early 1400s. Codebreakers, linguists, even AI have tried to crack it. Nobody has proved a solution. It sits today in a library at Yale, still keeping its secret.",
+  "scenes": [
+    "Old vellum book opening slowly on a dark desk",
+    "Close-up of strange looping handwritten script",
+    "Illustrations of unknown, bizarre plants",
+    "Scientist with carbon-dating lab equipment",
+    "WW2-style codebreakers at a table, then a computer screen",
+    "Yale Beinecke library exterior, glowing windows",
+    "Text card: Still unsolved"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Voynich_manuscript",
+    "https://www.livescience.com/12838-mystery-book-secret-110211-html.html"
+  ],
+  "words": 71,
+  "est_seconds": 27,
+  "description": "The Book Nobody on Earth Can Read\n\nSources:\nhttps://en.wikipedia.org/wiki/Voynich_manuscript\nhttps://www.livescience.com/12838-mystery-book-secret-110211-html.html"
+}
