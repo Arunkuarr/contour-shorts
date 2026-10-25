@@ -1,0 +1,22 @@
+{
+  "id": 8,
+  "title": "The Ghost Ship Found Perfectly Fine",
+  "tags": "mary celeste, ghost ship, mystery",
+  "script": "In 1872, sailors found a ship drifting in the Atlantic with no one on board. The Mary Celeste was seaworthy. Its cargo of over 1,700 barrels of alcohol was mostly untouched, and there was about six months of food and water. But the lifeboat was gone, and so were all ten people: the captain, his wife, their two-year-old daughter, and seven crew. They were never seen again. Nobody knows why they left.",
+  "scenes": [
+    "Wooden sailing ship drifting alone in grey Atlantic",
+    "Sailors from another ship spotting it through a spyglass",
+    "Empty ship deck, ropes swaying",
+    "Cargo hold full of barrels",
+    "Galley with food still stocked",
+    "Empty lifeboat davits",
+    "Text card: Mary Celeste, 1872"
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Mary_Celeste",
+    "https://www.britannica.com/topic/Mary-Celeste"
+  ],
+  "words": 72,
+  "est_seconds": 28,
+  "description": "The Ghost Ship Found Perfectly Fine\n\nSources:\nhttps://en.wikipedia.org/wiki/Mary_Celeste\nhttps://www.britannica.com/topic/Mary-Celeste"
+}
