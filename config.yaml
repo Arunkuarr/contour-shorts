@@ -1,0 +1,34 @@
+# Contour Shorts pipeline settings
+channel_name: Contour
+
+# How many Shorts to make per run (keep 1-2/day: posting more looks like a content farm)
+shorts_per_run: 2
+
+voice:
+  engine: gemini          # gemini (free AI Studio key, very human) | google (Chirp 3 HD, needs billing) | edge (free, no signup) | kokoro (offline)
+  gemini_model: gemini-2.5-flash-preview-tts
+  gemini_voice: Charon    # male narrator; also try Orus, Fenrir, Iapetus (male) or Kore, Aoede (female)
+  gemini_style: "Read this like a curious, captivating documentary narrator telling a surprising story to a friend. Natural pace, slight dramatic pauses between sentences, warm and confident:"
+  google_voice: en-US-Chirp3-HD-Charon   # male narrator; try Orus, Fenrir, Puck (male) or Aoede, Kore (female)
+  kokoro_voice: am_michael
+  edge_voice: en-US-AndrewMultilingualNeural
+  speed: 1.05
+
+visuals:
+  mode: mix               # mix | ai | stock
+  ai_provider: pollinations   # free, no key
+  # Scenes that mention these words get AI images (stock rarely has them)
+  historic_words: [century, medieval, ancient, ruler, king, queen, pharaoh, empire, "1[0-9]{3}", "[0-9]{2}th", victorian, regency, roman, viking, old, woodcut, sepia, black-and-white, uniform, robes]
+  style_suffix: "cinematic, dramatic lighting, highly detailed, documentary still, vertical composition, no text, no watermark"
+
+video:
+  width: 1080
+  height: 1920
+  fps: 30
+  caption_words: 3        # words per caption flash
+  watermark: true
+
+upload:
+  youtube: false          # true once YouTube API secrets are set (see README)
+  privacy: private        # always upload private, review, then publish in Studio
+  category_id: "27"       # Education
