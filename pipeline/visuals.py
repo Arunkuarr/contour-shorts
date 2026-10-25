@@ -48,7 +48,12 @@ def pollinations(scene, path, w, h, cfg, seed):
     headers = {}
     if os.environ.get("POLLINATIONS_TOKEN"):
         headers["Authorization"] = "Bearer " + os.environ["POLLINATIONS_TOKEN"]
-    for attempt in range(3):
+    global _last_ai
+    for attempt in range(5):
+        wait = 16 - (time.time() - _last_ai)  # free tier: ~1 image per 15 s
+        if wait > 0:
+            time.sleep(wait)
+        _last_ai = time.time()
         try:
             r = requests.get(url, headers=headers, timeout=180)
             if r.ok and r.headers.get("content-type", "").startswith("image"):
@@ -58,6 +63,9 @@ def pollinations(scene, path, w, h, cfg, seed):
             pass
         time.sleep(10 * (attempt + 1))
     return None
+
+
+_last_ai = 0.0
 
 
 def title_card(scene, path, w, h, idx):
