@@ -13,6 +13,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: make-shorts
+  cancel-in-progress: false
+
 jobs:
   make:
     runs-on: ubuntu-latest
@@ -24,7 +28,7 @@ jobs:
         if: github.event_name == 'schedule'
         run: |
           today=$(TZ=Asia/Kolkata date +%F)
-          d=$(curl -sf "https://raw.githubusercontent.com/${{ github.repository }}/videos/status.json?t=$(date +%s)" | python3 -c "import json,sys;print(json.load(sys.stdin).get('date_ist',''))" || true)
+          d=$( (git fetch -q --depth 1 origin videos && git show FETCH_HEAD:status.json) 2>/dev/null | python3 -c "import json,sys;print(json.load(sys.stdin).get('date_ist',''))" || true)
           echo "today=$today last=$d"
           if [ "$d" = "$today" ]; then echo "SKIP=1" >> "$GITHUB_ENV"; fi
 
