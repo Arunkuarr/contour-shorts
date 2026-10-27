@@ -2,7 +2,8 @@ name: Make Shorts
 
 on:
   schedule:
-    - cron: "17 23 * * *"   # every day 04:47 IST (ready before the 7 AM review)
+    - cron: "17 23 * * *"   # every day 04:47 IST
+    - cron: "47 0 * * *"    # backup 06:17 IST, skipped if today's Shorts already exist
   workflow_dispatch:
     inputs:
       count:
@@ -19,18 +20,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Skip if today's Shorts already exist (backup schedule)
+        if: github.event_name == 'schedule'
+        run: |
+          today=$(TZ=Asia/Kolkata date +%F)
+          d=$(curl -sf "https://raw.githubusercontent.com/${{ github.repository }}/videos/status.json?t=$(date +%s)" | python3 -c "import json,sys;print(json.load(sys.stdin).get('date_ist',''))" || true)
+          echo "today=$today last=$d"
+          if [ "$d" = "$today" ]; then echo "SKIP=1" >> "$GITHUB_ENV"; fi
+
+
       - uses: actions/setup-python@v5
+        if: env.SKIP != '1'
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Install ffmpeg
+        if: env.SKIP != '1'
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
       - name: Install Python packages
+        if: env.SKIP != '1'
         run: pip install -r requirements.txt
 
       - name: Kokoro voice model (only if engine is kokoro)
+        if: env.SKIP != '1'
         run: |
           if grep -qE "^\s*engine:\s*kokoro" config.yaml; then
             mkdir -p models
@@ -39,6 +53,7 @@ jobs:
           fi
 
       - name: Make Shorts
+        if: env.SKIP != '1'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
@@ -50,6 +65,7 @@ jobs:
         run: python -W ignore -m pipeline.main --count "${{ github.event.inputs.count || '' }}"
 
       - name: Publish videos to the 'videos' branch (newest 8 kept)
+        if: env.SKIP != '1'
         run: |
           set -e
           ls output/*.mp4 >/dev/null 2>&1 || exit 0
@@ -60,12 +76,15 @@ jobs:
           cp "$GITHUB_WORKSPACE"/output/*.mp4 "$GITHUB_WORKSPACE"/output/*.json .
           for f in $(ls *.mp4 | sort | head -n -8); do rm -f "$f" "${f%.mp4}.json"; done
           python3 -c "import json,glob;json.dump([dict(json.load(open(j)),video=j[:-5]+'.mp4') for j in sorted(glob.glob('[0-9]*.json'))],open('pending.json','w'),indent=2)"
+          NEW=$(cd "$GITHUB_WORKSPACE/output" && ls *.mp4 | tr '\n' ' ')
+          python3 -c "import json,sys;json.dump({'date_ist':sys.argv[1],'run':int(sys.argv[2]),'new':sys.argv[3].split()},open('status.json','w'),indent=2)" "$(TZ=Asia/Kolkata date +%F)" "${{ github.run_number }}" "$NEW"
           git checkout -q --orphan pub
           git add -A
           git -c user.name=contour-bot -c user.email=contour-bot@users.noreply.github.com commit -qm "videos run ${{ github.run_number }}"
           git push -qf origin pub:videos
 
       - name: Save videos (download from the run page)
+        if: env.SKIP != '1'
         uses: actions/upload-artifact@v4
         with:
           name: shorts-${{ github.run_number }}
@@ -73,6 +92,7 @@ jobs:
           retention-days: 30
 
       - name: Mark scripts as done
+        if: env.SKIP != '1'
         run: |
           git config user.name "contour-bot"
           git config user.email "contour-bot@users.noreply.github.com"
