@@ -2,8 +2,9 @@ name: Make Shorts
 
 on:
   schedule:
-    - cron: "17 23 * * *"   # every day 04:47 IST
-    - cron: "47 0 * * *"    # backup 06:17 IST, skipped if today's Shorts already exist
+    - cron: "13 20 * * *"   # 01:43 IST (GitHub often starts scheduled runs hours late)
+    - cron: "13 22 * * *"   # backup 03:43 IST, skipped if today's Shorts already exist
+    - cron: "43 23 * * *"   # backup 05:13 IST, skipped if today's Shorts already exist
   workflow_dispatch:
     inputs:
       count:
