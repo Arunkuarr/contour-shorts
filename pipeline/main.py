@@ -20,7 +20,7 @@ def next_scripts(n, only_id=None):
         done = {int(l) for l in open(DONE_IDS) if l.strip()}
     for f in sorted(glob.glob("content/batches/*.json")):
         for obj in json.load(open(f)):
-            if obj["id"] not in done:
+            if obj["id"] not in done or obj["id"] == only_id:
                 items.append((obj["id"], obj))
     items.sort(key=lambda t: t[0])
     if only_id is not None:
@@ -45,7 +45,7 @@ def mark_done(entry, short):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--id", type=int)
+    ap.add_argument("--id", type=lambda s: int(s) if s.strip() else None)
     ap.add_argument("--count", type=lambda s: int(s) if s.strip() else None)
     ap.add_argument("--keep-queue", action="store_true", help="don't move scripts to done/")
     a = ap.parse_args()
