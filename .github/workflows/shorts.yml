@@ -10,6 +10,9 @@ on:
       count:
         description: "How many Shorts to make"
         default: "2"
+      redo_id:
+        description: "Re-make one script by id (leave empty for normal run)"
+        default: ""
 
 permissions:
   contents: write
@@ -67,7 +70,7 @@ jobs:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-        run: python -W ignore -m pipeline.main --count "${{ github.event.inputs.count || '' }}"
+        run: python -W ignore -m pipeline.main --count "${{ github.event.inputs.count || '' }}" --id "${{ github.event.inputs.redo_id || '' }}"
 
       - name: Publish videos to the 'videos' branch (newest 8 kept)
         if: env.SKIP != '1'
