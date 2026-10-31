@@ -99,7 +99,7 @@ def title_card(scene, path, w, h, idx):
 def get_scene_images(short, workdir, cfg):
     w, h = cfg["video"]["width"], cfg["video"]["height"]
     mode = cfg["visuals"]["mode"]
-    paths = []
+    paths, srcs = [], []
     for i, scene in enumerate(short["scenes"]):
         p = os.path.join(workdir, f"scene_{i:02d}.jpg")
         got, src = None, None
@@ -115,8 +115,28 @@ def get_scene_images(short, workdir, cfg):
                     print(f"  {kind} failed for scene {i}: {e}")
                 if got:
                     src = kind; break
-        if not got:
-            got, src = title_card(scene, p, w, h, i), "fallback"
-        print(f"  scene {i}: {src}")
+        print(f"  scene {i}: {src or 'missing'}")
         paths.append(got)
+        srcs.append(src)
+    # Never show raw scene instructions on screen: retry missing images with a short prompt
+    # and a new seed, then reuse a neighbouring picture, and only as a last resort use the title.
+    for i, got in enumerate(paths):
+        if got:
+            continue
+        p = os.path.join(workdir, f"scene_{i:02d}.jpg")
+        short_prompt = " ".join(re.sub(r"[,:;]", " ", short["scenes"][i]).split()[:8])
+        try:
+            got = pollinations(short_prompt, p, w, h, cfg, short["id"] * 100 + i + 50)
+        except Exception as e:
+            print(f"  retry failed for scene {i}: {e}")
+        if not got:
+            near = [paths[j] for j in sorted(range(len(paths)), key=lambda j: abs(j - i))
+                    if j != i and paths[j] and srcs[j] in ("ai", "stock", "retry")]
+            if near:
+                import shutil
+                shutil.copy(near[0], p)
+                got = p
+        srcs[i] = "retry" if got else "title"
+        paths[i] = got or title_card(short["title"], p, w, h, i)
+        print(f"  scene {i}: {srcs[i]}")
     return paths
