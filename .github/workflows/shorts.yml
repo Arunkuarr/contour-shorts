@@ -106,4 +106,9 @@ jobs:
           git config user.email "contour-bot@users.noreply.github.com"
           git add content/
           git diff --cached --quiet || git commit -m "Made Shorts run ${{ github.run_number }}"
-          git push
+          for i in 1 2 3 4 5; do
+            git fetch --deepen=100 origin main && git rebase -X theirs origin/main && git push origin HEAD:main && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep $((i*5))
+          done
+          echo "Could not push done marks"; exit 1
