@@ -11,7 +11,7 @@ PEOPLE = re.compile(r"\b(man|men|woman|women|people|person|persons|villagers?|ch
     r"teachers?|lawyers?|judges?|jurors?|jury|diplomats?|crowds?|workers?|clerks?|customers?|scientists?|engineers?|"
     r"governors?|soldiers?|knights?|sailors?|farmers?|kings?|queens?|emperors?|monks?|priests?|officials?|students?|"
     r"family|families|crew|guards?|merchants?|explorers?|doctors?|nurses?|actors?|audience|spectators?|shoppers?|"
-    r"passengers?|tourists?|historians?|inventors?|wife|husband|couple|portrait|faces?|figures?|silhouettes?|"
+    r"passengers?|tourists?|historians?|inventors?|wife|husband|couple|portrait|codebreakers?|scholars?|"
     r"astronomers?|researchers?|miners?|fishermen|townspeople|citizens?|residents?|locals?|riders?|pilots?|captain|"
     r"players?|operators?|keepers?|brothers?|sisters?|mother|father|baby|babies|wives|husbands|lawman|sheriff|"
     r"pharaoh|ruler|rulers|nobles?|peasants?|servants?|slaves?|warriors?|vikings?|samurai|gladiators?|senators?|"
@@ -20,7 +20,9 @@ EMPTY = "completely empty scene, no people, no humans, no faces, no figures, uni
 
 
 _P = PEOPLE.pattern[2:-2]
-_STOP = r"(?=\s+(?:\w+ly\s+)?(?:\w+ing|gathered|seated|crowded|lined)\b|\s+(?:at|on|in|by|beside|near|around|behind|under|inside|before|across|over)\b|$)"
+_CLOTH = (r"(?:dress|dresses|gowns?|robes?|coats?|suits?|uniforms?|armou?r|caps?|hats?|helmets?|cardigans?|sweaters?|"
+          r"wigs?|clothes|clothing|attire|shawls?|turbans?|battledress|tunics?|togas?|cloaks?|aprons?|overalls|jackets?|"
+          r"crowns?|furs?|hides?|rags|frock coats?|waistcoats?|bonnets?|veils?|scarves|boots|kimonos?|saris?|shirts?)\b")
 
 
 def _clean_clause(c):
@@ -30,7 +32,8 @@ def _clean_clause(c):
                  c, flags=re.I)                                                             # leading "Two medieval kings"
     if m:
         c = c[m.end():]
-        c = re.sub(r"^\s*(?:in|wearing)\s+[^,]*?" + _STOP, "", c, flags=re.I)          # "in crowns and robes"
+        c = re.sub(r"^\s*(?:in|wearing)\s+(?:[\w'-]+\s+){0,5}?" + _CLOTH + r"(?:\s+and\s+(?:[\w'-]+\s+){0,3}?"
+                   + _CLOTH + r")?", "", c, flags=re.I)                                      # "in crowns and robes"
         c = re.sub(r"^\s*(?:\w+ly\s+)?(?:\w+ing|gathered|seated)\b\s*", "", c, flags=re.I)  # "signing"
     c = re.sub(r"\b" + _P + r"(?:'s)?\b", "", c, flags=re.I)                              # any leftovers
     c = re.sub(r"^\s*(?:to|at|on|in|by|beside|near|around|behind|under|inside|across|over|up|down|into|through|from)\s+", "", c, flags=re.I)
