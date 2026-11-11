@@ -60,6 +60,15 @@ jobs:
             curl -sSL -o models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
           fi
 
+      - name: People-check models (face + person detectors)
+        if: env.SKIP != '1'
+        run: |
+          mkdir -p models
+          curl -sSfL -o models/yunet.onnx https://raw.githubusercontent.com/ShiqiYu/libfacedetection.train/master/onnx/yunet_n_320_320.onnx || true
+          curl -sSfL -o models/ssd_deploy.prototxt https://raw.githubusercontent.com/chuanqi305/MobileNet-SSD/master/deploy.prototxt || true
+          curl -sSfL -o models/ssd_mobilenet.caffemodel https://raw.githubusercontent.com/chuanqi305/MobileNet-SSD/master/mobilenet_iter_73000.caffemodel || true
+          ls -la models
+
       - name: Make Shorts
         if: env.SKIP != '1'
         env:
