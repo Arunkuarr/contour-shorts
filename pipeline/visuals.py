@@ -78,13 +78,20 @@ def has_people(path):
     im = cv2.imread(path)
     if im is None:
         return False
-    blob = cv2.dnn.blobFromImage(cv2.resize(im, (300, 300)), 0.007843, (300, 300), 127.5)
-    net.setInput(blob)
-    out = net.forward()
-    for i in range(out.shape[2]):
-        if int(out[0, 0, i, 1]) == 15 and float(out[0, 0, i, 2]) > 0.6:  # class 15 = person
-            return True
+    def person(img, th):
+        blob = cv2.dnn.blobFromImage(cv2.resize(img, (300, 300)), 0.007843, (300, 300), 127.5)
+        net.setInput(blob)
+        out = net.forward()
+        return any(int(out[0, 0, i, 1]) == 15 and float(out[0, 0, i, 2]) > th  # class 15 = person
+                   for i in range(out.shape[2]))
+    if person(im, 0.6):
+        return True
     h, w = im.shape[:2]
+    tw, th_ = int(w * 0.6), int(h * 0.45)  # overlapping tiles catch small, distant figures
+    for x in (0, w - tw):
+        for y in (0, (h - th_) // 2, h - th_):
+            if person(im[y:y + th_, x:x + tw], 0.9):
+                return True
     s = 640 / max(h, w)
     sm = cv2.resize(im, (int(w * s), int(h * s)))
     fd.setInputSize((sm.shape[1], sm.shape[0]))
