@@ -11,12 +11,12 @@ PEOPLE = re.compile(r"\b(man|men|woman|women|people|person|persons|villagers?|ch
     r"teachers?|lawyers?|judges?|jurors?|jury|diplomats?|crowds?|workers?|clerks?|customers?|scientists?|engineers?|"
     r"governors?|soldiers?|knights?|sailors?|farmers?|kings?|queens?|emperors?|monks?|priests?|officials?|students?|"
     r"family|families|crew|guards?|merchants?|explorers?|doctors?|nurses?|actors?|audience|spectators?|shoppers?|"
-    r"passengers?|tourists?|historians?|inventors?|wife|husband|couple|portrait|codebreakers?|scholars?|"
+    r"passengers?|tourists?|historians?|inventors?|wife|husband|couple|portrait|codebreakers?|scholars?|archaeologists?|chemists?|marketers?|salesm[ae]n|reporters?|journalists?|editors?|astronauts?|"
     r"astronomers?|researchers?|miners?|fishermen|townspeople|citizens?|residents?|locals?|riders?|pilots?|captain|"
     r"players?|operators?|keepers?|brothers?|sisters?|mother|father|baby|babies|wives|husbands|lawman|sheriff|"
     r"pharaoh|ruler|rulers|nobles?|peasants?|servants?|slaves?|warriors?|vikings?|samurai|gladiators?|senators?|"
     r"president|mayor|officers?|police|detectives?|thief|thieves|prisoners?|someone|everyone|human|humans|hands?)\b", re.I)
-EMPTY = "completely empty scene, no people, no humans, no faces, no figures, uninhabited"
+EMPTY = "deserted, empty and uninhabited, quiet still life"  # positive wording: image models ignore "no X"
 
 
 _P = PEOPLE.pattern[2:-2]
@@ -47,6 +47,7 @@ def setting_only(scene):
     """Turn a scene that mentions people into a people-free version of the same place and objects."""
     if not PEOPLE.search(scene):
         return scene
+    scene = re.sub(r"\b(busy|bustling|crowded|packed|lively)\b", "quiet", scene, flags=re.I)
     keep = [k for k in (_clean_clause(c) for c in scene.split(",")) if k]
     return ", ".join(keep) or "atmospheric empty historic interior"
 
@@ -90,6 +91,12 @@ def has_people(path):
     tw, th_ = int(w * 0.6), int(h * 0.45)  # overlapping tiles catch small, distant figures
     for x in (0, w - tw):
         for y in (0, (h - th_) // 2, h - th_):
+            if person(im[y:y + th_, x:x + tw], 0.9):
+                return True
+    tw, th_ = int(w / 3 * 1.4), int(h / 4 * 1.4)  # finer 3x4 grid for tiny figures
+    for c in range(3):
+        for r in range(4):
+            x, y = min(int(c * w / 3), w - tw), min(int(r * h / 4), h - th_)
             if person(im[y:y + th_, x:x + tw], 0.9):
                 return True
     s = 640 / max(h, w)
