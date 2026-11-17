@@ -11,7 +11,7 @@ PEOPLE = re.compile(r"\b(man|men|woman|women|people|person|persons|villagers?|ch
     r"teachers?|lawyers?|judges?|jurors?|jury|diplomats?|crowds?|workers?|clerks?|customers?|scientists?|engineers?|"
     r"governors?|soldiers?|knights?|sailors?|farmers?|kings?|queens?|emperors?|monks?|priests?|officials?|students?|"
     r"family|families|crew|guards?|merchants?|explorers?|doctors?|nurses?|actors?|audience|spectators?|shoppers?|"
-    r"passengers?|tourists?|historians?|inventors?|wife|husband|couple|portrait|codebreakers?|scholars?|archaeologists?|chemists?|marketers?|salesm[ae]n|reporters?|journalists?|editors?|astronauts?|"
+    r"passengers?|tourists?|historians?|inventors?|wife|husband|couple|portrait|codebreakers?|scholars?|archaeologists?|chemists?|marketers?|salesm[ae]n|reporters?|journalists?|editors?|astronauts?|messengers?|musicians?|writers?|poets?|aides?|riders?|horsemen|"
     r"astronomers?|researchers?|miners?|fishermen|townspeople|citizens?|residents?|locals?|riders?|pilots?|captain|"
     r"players?|operators?|keepers?|brothers?|sisters?|mother|father|baby|babies|wives|husbands|lawman|sheriff|"
     r"pharaoh|ruler|rulers|nobles?|peasants?|servants?|slaves?|warriors?|vikings?|samurai|gladiators?|senators?|"
